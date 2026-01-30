@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-api
+  namespace: 3-tier-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-api
+  template:
+    metadata:
+      labels:
+        app: task-api
+    spec:
+      containers:
+        - name: task-api
+          image: chaitanyamunje08/task-app-backend:1.2
+          ports:
+            - containerPort: 3030
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: task-api-config
+                  key: PORT
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: task-api-secret
+                  key: MONGO_URL
+
+          # To enable HPA, we must set resource requests and limits follow below code for HPA.
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          # ✅ READINESS PROBE
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3030
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          # ✅ LIVENESS PROBE
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3030
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-api-service
+  namespace: 3-tier-app
+spec:
+  type: NodePort
+  selector:
+    app: task-api
+  ports:
+    - port: 3030
+      targetPort: 3030
+      nodePort: 30007

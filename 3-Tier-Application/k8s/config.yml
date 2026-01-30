@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-api-config
+  namespace: 3-tier-app
+data:
+  PORT: "3030"
