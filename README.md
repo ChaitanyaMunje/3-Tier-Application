@@ -107,6 +107,7 @@ docker build -t chaitanyamunje08/task-app-backend:1.2 .
 docker push chaitanyamunje08/task-app-backend:1.2
 ```
 
+
 ### Single command to build & push (Mac – linux/amd64)
 
 ```
