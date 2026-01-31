@@ -69,6 +69,8 @@ jobs:
       - name: Update deployment image tag
         run: |
           sed -i "s|image: .*task-app-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-backend:${{ env.TAG }}|" 3-Tier-Application/k8s/backend.yml
+          sed -i "s|image: .*task-app-frontend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-frontend:${{ env.TAG }}|" 3-Tier-Application/k8s/frontend.yml
+
 
       # 7️⃣ Commit and push manifest change for backend
       - name: Commit and push updated manifest
@@ -76,20 +78,21 @@ jobs:
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add 3-Tier-Application/k8s/backend.yml
-          git commit -m "Update backend image to ${{ env.TAG }}"
-          git push
-
-
-      # 6️⃣ Update image tag in deployment.yml for frontend
-      - name: Update deployment image tag
-        run: |
-          sed -i "s|image: .*task-app-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-frontend:${{ env.TAG }}|" 3-Tier-Application/k8s/frontend.yml
-
-      # 7️⃣ Commit and push manifest change for frontend
-      - name: Commit and push updated manifest
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
           git add 3-Tier-Application/k8s/frontend.yml
-          git commit -m "Update frontend image to ${{ env.TAG }}"
+          git commit -m "Update backend and frontend image to ${{ env.TAG }}"
           git push
+
+
+      # # 6️⃣ Update image tag in deployment.yml for frontend
+      # - name: Update deployment image tag
+      #   run: |
+      #     sed -i "s|image: .*task-app-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-frontend:${{ env.TAG }}|" 3-Tier-Application/k8s/frontend.yml
+
+      # # 7️⃣ Commit and push manifest change for frontend
+      # - name: Commit and push updated manifest
+      #   run: |
+      #     git config user.name "github-actions"
+      #     git config user.email "github-actions@github.com"
+      #     git add 3-Tier-Application/k8s/frontend.yml
+      #     git commit -m "Update frontend image to ${{ env.TAG }}"
+      #     git push
