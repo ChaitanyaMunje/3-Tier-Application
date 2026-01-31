@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-app-frontend
+  namespace: 3-tier-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-app-frontend
+  template:
+    metadata:
+      labels:
+        app: task-app-frontend
+    spec:
+      containers:
+        - name: task-app-frontend
+          image: chaitanyamunje08/task-app-frontend:1.1
+          ports:
+            - containerPort: 3001
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: frontend-config
+                  key: PORT
+            - name: REACT_APP_API_BASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-secret
+                  key: REACT_APP_API_BASE_URL
+
+          # To enable HPA, we must set resource requests and limits follow below code for HPA.
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+
+          # ✅ READINESS PROBE
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+          # ✅ LIVENESS PROBE
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-app-frontend-service
+  namespace: 3-tier-app
+spec:
+  type: NodePort
+  selector:
+    app: task-app-frontend
+  ports:
+    - port: 3001
+      targetPort: 3001
+      nodePort: 30001
