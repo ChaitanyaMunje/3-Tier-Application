@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "3-Tier-Application/backend/**"
 
 jobs:
   docker:
