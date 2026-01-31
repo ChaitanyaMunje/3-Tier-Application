@@ -44,7 +44,7 @@ jobs:
       # 6️⃣ Update image tag in deployment.yml
       - name: Update deployment image tag
         run: |
-          sed -i "s|image: .*task-app-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-backend:${{ env.IMAGE_TAG }}|" 3-Tier-Application/k8s/backend.yml
+          sed -i "s|image: .*task-app-backend:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/task-app-backend:${{ env.IMAGE_TAG }}|" 3-Tier-Application/3-Tier-Application/k8s/backend.yml
 
       # 7️⃣ Commit and push manifest change
       - name: Commit and push updated manifest
