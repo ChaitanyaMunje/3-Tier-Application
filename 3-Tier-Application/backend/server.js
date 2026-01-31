@@ -18,7 +18,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.status(200).json({
     status: "UP",
-    message: "🚀 Task API server is running"
+    message: "🚀 Task API server is running with update : v1.0.0"
   });
 });
 
