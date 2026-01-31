@@ -7,7 +7,7 @@ router.post("/tasks", async (req, res) => {
   try {
     const task = new Task({
       task: req.body.task,
-      dateCreated: req.body.dateCreated
+      dateCreated: new Date()
     });
 
     const savedTask = await task.save();
