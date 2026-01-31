@@ -13,7 +13,6 @@ This repository documents a **complete end-to-end backend system** built using *
 ## 🗄 MongoDB Setup Using Docker
 
 ### 1. Command to run MongoDB using Docker
-
 ```
 docker run -d \
  --name mongodb \
