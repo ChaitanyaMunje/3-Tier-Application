@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: task-api
-          image: chaitanyamunje08/task-app-backend:2530ed5
+          image: chaitanyamunje08/task-app-backend:0aabb11
           ports:
             - containerPort: 3030
           env:
