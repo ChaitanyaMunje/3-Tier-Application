@@ -491,6 +491,58 @@ Internet
  MongoDB Atlas
 ```
 
+
+```
+EKS Cluster Architecture
+
+                           ┌───────────────────────────┐
+                           │        Internet / Users    │
+                           └───────────────┬───────────┘
+                                           │
+                                   HTTPS / HTTP
+                                           │
+                           ┌───────────────────────────┐
+                           │     AWS ALB (Ingress)      │
+                           │  (Managed by ALB Ctrl)    │
+                           └───────────────┬───────────┘
+                                           │
+                  ┌────────────────────────┼─────────────────────────┐
+                  │                        │                         │
+            / (Frontend)              /api (Backend)           Admin Tools
+                  │                        │                         │
+        ┌─────────▼─────────┐   ┌─────────▼─────────┐    ┌─────────▼─────────┐
+        │ Frontend Service  │   │ Backend Service   │    │ Argo/Grafana/etc  │
+        │ (ClusterIP)       │   │ (ClusterIP)       │    │ (ClusterIP)       │
+        └─────────┬─────────┘   └─────────┬─────────┘    └─────────┬─────────┘
+                  │                        │                         │
+        ┌─────────▼─────────┐   ┌─────────▼─────────┐    ┌─────────▼─────────┐
+        │ Frontend Pods     │   │ Backend Pods      │    │ Tool Pods         │
+        │ (HPA enabled)     │   │ (HPA enabled)     │    │ (No HPA usually)  │
+        └─────────┬─────────┘   └─────────┬─────────┘    └─────────┬─────────┘
+                  │                        │
+                  └──────────────┬─────────┘
+                                 │
+                         ┌───────▼────────┐
+                         │ MongoDB Atlas  │
+                         │ (External DB)  │
+                         └────────────────┘
+
+────────────────────────────────────────────────────────────────────────────
+
+Kubernetes Control Plane (Managed by AWS)
+│
+├── Scheduler
+├── Controller Manager
+├── API Server
+│
+└── Node Groups (EC2 Auto Scaling Groups)
+      ├── Worker Node 1
+      ├── Worker Node 2
+      ├── Worker Node 3 (added by Cluster Autoscaler)
+
+
+```
+
 Monitoring:
 ```
 Prometheus → Grafana
